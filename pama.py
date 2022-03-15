@@ -2,7 +2,6 @@ from pydub import AudioSegment
 from os import listdir
 from os.path import isfile, join
 import os
-import pandas as pd
 import datetime
 import sys
 onlyfiles = [f for f in listdir(sys.argv[1]) if isfile(join(sys.argv[1], f))]
@@ -35,9 +34,13 @@ lengs3 = []
 for  i in lengs:
     lengs3.append(str(datetime.timedelta(seconds=i)))
     
-df = {'From/to':lengs3, 'Title': names}
-df = pd.DataFrame(df)
+df = []
+for i in range(len(lengs3)):
+    df.append(names[i] + ", " + str(lengs3[i]))
 print("Exporting audio lengths csv...")
-df.to_csv('titles-lengths.csv', index = False, header=True)
+with open('lengths.csv', 'w') as f:
+    for line in df:
+        f.write(line)
+        f.write('\n')
 print("Exporting audio file...")
 sound1.export("combined.mp3", format="mp3")
